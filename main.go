@@ -1,6 +1,7 @@
 package main
 
 import (
+	"crypto/rand"
 	"fmt"
 	"os"
 	"strconv"
@@ -25,7 +26,8 @@ func printHelp(){
   fmt.Println("\033[32muuid         Generates UUID.")
   fmt.Println("pwd          Generates strong password.")
   fmt.Println("hex *size    Generates hex with input size.")
-  fmt.Println("base64 *size Generates Base64 with input size.\033[0m\n")
+  fmt.Println("base64 *size Generates Base64 with input size.")
+  fmt.Println("prime *size  Generates prime number with input size.\033[0m\n")
 }
 
 func main(){
@@ -62,6 +64,23 @@ func main(){
           return
         }
         prettyPrint(randstr.Base64(size), cc_green)
+      }
+    case "prime":
+      if len(os.Args) < 3 {
+        printError("Error: Please enter a length")
+        return
+      } else {
+        size, err := strconv.Atoi(os.Args[2])
+        if err != nil {
+          printError("Error: Please enter a valid length!")
+          return
+        }
+        p, err := rand.Prime(rand.Reader, size)
+        if err != nil {
+          printError(err.Error())
+          return
+        }
+        prettyPrint(p.String(), cc_green)
       }
     default:
       printHelp()
